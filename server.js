@@ -1,18 +1,39 @@
 const express = require('express');
 const next = require('next');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+// needs full path to index.js because esm module is experimental
+const productsAPI = require('./server/routes/index.js');
 
+const uri = `mongodb+srv://@cluster0-wxyfb.mongodb.net/products?retryWrites=true&w=majority`;
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
+
+mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      user: process.env.USER,
+      password: process.env.PASSWORD
+    });
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('good connection');
+  // we're connected!
+});
+
+
 
 app.prepare().then(() => {
   const server = express();
 
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
-  server.use('/api', require('./server/routes/index'));
+  server.use('/api', productsAPI);
   server.all('*', (req, res) => {
     return handle(req, res)
   });

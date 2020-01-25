@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const Product = require('../models/Product');
 
-const products = [{
+const products = [
+  {
   id: '1',
   quantity: 10,
   name: 'product 1',
@@ -50,8 +52,32 @@ const products = [{
     price: 35
   }];
 
-router.get('/products', (req, res) => {
-  res.json({data: products});
+router.get('/products', async (req, res) => {
+  try {
+    const products = await Product.find({});
+    console.log('products  = ', products);
+    res.send(products);
+  } catch(e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
+});
+
+router.get('/products/:id', async(req, res) => {
+  try {
+    const product = new Product({
+      name: 'name',
+      id: req.params.id,
+      quantity: 1,
+      price: 35
+    });
+    await product.save();
+    res.send(product);
+  } catch(e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
+
 });
 
 router.post('/products/:id', (req, res) => {
