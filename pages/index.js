@@ -15,6 +15,7 @@ const App = () => {
   const [error, setError] = useState('');
   const [info, setInfo] = useState(TEXTS.selectProduct);
   const [balance, setBalance] = useState(0);
+  const [buyingLoading, setBuyingLoading] = useState(false);
 
   const handleKeyPad = (keypadInput) => {
     //todo: nice to have a limit
@@ -48,6 +49,7 @@ const App = () => {
     if (product) {
       if(balance > product.price) {
         try {
+          setBuyingLoading(true);
           const res = await fetch(`http://localhost:3000/api/products/${product._id}`, { method: 'PATCH'});
           const data = await res.json();
           setProducts(data.map(mapCodesToProducts));
@@ -63,6 +65,7 @@ const App = () => {
       setInfo(TEXTS.enterCodeAgain);
     }
     resetInput();
+    setBuyingLoading(false);
   };
 
   return(
@@ -87,7 +90,7 @@ const App = () => {
         </div>
         <h3>{TEXTS.keypadInput}</h3>
         <div>{input ? input : info}</div>
-        <div><button onClick={buyProduct}>{TEXTS.select}</button></div>
+        <div>{buyingLoading ? <SkeletonLine height='4px'/> :<button onClick={buyProduct}>{TEXTS.select}</button> }</div>
         {error && <div>{error}</div>}
         <div>{TEXTS.balance}: {balance ? balance : TEXTS.noBalance}</div>
         <div style={{display: 'flex', alignItems: 'baseline'}}>{TEXTS.insertMoney} {coins.map(c => (<span key={c} className='coin' onClick={() => setBalance(balance + c)}>{c}</span>))} </div>

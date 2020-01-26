@@ -1,19 +1,15 @@
 import React from 'react';
 
-const style ={
-  display: 'inline-block',
-  height: '100%',
-  width: '100%',
-  background: 'linear-gradient(-90deg, #C1C1C1 0%, #F8F8F8 50%, #C1C1C1 100%)',
-  backgroundSize: '400% 400%',
-  animation: 'animator 1.2s ease-in-out infinite',
-
-};
-
-export const SkeletonLine = () => {
+export const SkeletonLine = ({width, height}) => {
   return (
-    <div style={style}>
+    <div>
       <style jsx>{`
+      display: inline-block;
+      height: ${height ? height : '100%'};
+      width: ${width ? width : '100%'};
+      background: linear-gradient(-90deg, #C1C1C1 0%, #F8F8F8 50%, #C1C1C1 100%);
+      background-size: 400% 400%;
+      animation: pulse 1.2s ease-in-out infinite;
         @keyframes animator {
           0% {
             background-position: 0% 0%;
