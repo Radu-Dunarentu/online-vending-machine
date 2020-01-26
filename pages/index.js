@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 import fetch from 'isomorphic-unfetch';
 import {TEXTS} from '../components/texts';
 import {SkeletonLine} from '../components/Skeleton';
-import ProductList from "../components/productList";
+import dynamic from 'next/dynamic';
+const ProductList = dynamic(() => import('../components/ProductList'));
 
 // TODO: create more components
 const keyPadInputs = ['1','2','3','4','5','6','7','8','9','C','0','B'];
@@ -75,7 +76,7 @@ const App = () => {
       <h1>{TEXTS.mainTitle}</h1>
       <div className='products-container'>
         {products.length ? <ProductList products={products} />
-        : (productCodes.map(() => <SkeletonLine width={400} height={500}/>))}
+        : (productCodes.map((code) => <SkeletonLine key={code} width={400} height={500}/>))}
       </div>
         </div>
       <div>

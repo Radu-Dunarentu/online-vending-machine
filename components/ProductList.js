@@ -1,6 +1,6 @@
 import React from 'react';
 import {TEXTS} from './texts';
-
+/* lazy loaded component */
 const ProductList = ({products}) => products.map(product => (
   <div key={product.id} className='card product'>
     <div className='product-title'><b>{product.name}</b></div>
