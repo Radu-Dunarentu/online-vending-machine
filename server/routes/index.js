@@ -1,61 +1,71 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/Product');
+const uuidv4 = require('uuid/v4');
 
 const products = [
   {
-  id: '1',
+  id: uuidv4(),
   quantity: 10,
-  name: 'product 1',
+  name: 'product 11',
   price: 30
 },
   {
-    id: '2',
+    id: uuidv4(),
     quantity: 10,
-    name: 'product 2',
+    name: 'product 12',
     price: 35
   },
   {
-    id: '3',
+    id: uuidv4(),
     quantity: 10,
-    name: 'product 3',
+    name: 'product 13',
     price: 25
   },
   {
-    id: '4',
+    id: uuidv4(),
     quantity: 10,
-    name: 'product 4',
+    name: 'product 14',
     price: 15
   },
   {
-    id: '5',
+    id: uuidv4(),
     quantity: 10,
-    name: 'product 5',
+    name: 'product 15',
     price: 5
   },
   {
-    id: '6',
+    id: uuidv4(),
     quantity: 10,
-    name: 'product 6',
+    name: 'product 16',
     price: 45
   },
   {
-    id: '7',
+    id: uuidv4(),
     quantity: 10,
-    name: 'product 7',
+    name: 'product 17',
     price: 55
   },
   {
-    id: '8',
+    id: uuidv4(),
     quantity: 10,
-    name: 'product 8',
+    name: 'product 18',
     price: 35
   }];
 
+router.get('/generate-products', async(req, res) => {
+  try {
+    const data = await Product.insertMany(products);
+    res.send(data);
+  } catch(e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
+});
 router.get('/products', async (req, res) => {
   try {
     const products = await Product.find({});
-    console.log('products  = ', products);
+    console.log(products);
     res.send(products);
   } catch(e) {
     console.log(e);
@@ -63,32 +73,34 @@ router.get('/products', async (req, res) => {
   }
 });
 
-router.get('/products/:id', async(req, res) => {
+router.delete('/products/:id', async (req, res) => {
   try {
-    const product = new Product({
-      name: 'name',
-      id: req.params.id,
-      quantity: 1,
-      price: 35
-    });
+    const prod = await Product.findByIdAndDelete(req.params.id);
+    if (!prod) res.status(404).send("No item found");
+    res.status(200).send()
+  }catch(e) {
+    res.status(500).send(e);
+  }
+});
+
+router.patch('/products/:id', async (req, res) => {
+  try {
+    await Product.findByIdAndUpdate(req.params.id, req.body);
+    const prod = await Product.save();
+    res.send(prod);
+  } catch (err) {
+    res.status(500).send(err)
+  }
+});
+router.post('/products/:id', async(req, res) => {
+  try {
+    const product = new Product(req.body);
     await product.save();
     res.send(product);
   } catch(e) {
     console.log(e);
     res.status(500).send(e);
   }
-
 });
 
-router.post('/products/:id', (req, res) => {
-  // do some in memory changes
-  const product = products.find(p => p.id === req.params.id);
-  if (product && product.quantity) {
-    product.quantity -=1;
-    res.json({data: products});
-  } else {
-    res.status(406).send({err: 'no more products left'})
-  }
-
-});
 module.exports = router;

@@ -145,7 +145,7 @@ const App = (props) => {
 
 App.getInitialProps = async () => {
   const res = await fetch('http://localhost:3000/api/products');
-  const {data} = await res.json();
+  const data = await res.json();
   console.log('get products', data);
   return {
     products: data.map(mapCodesToProducts)

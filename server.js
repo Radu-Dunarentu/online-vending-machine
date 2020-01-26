@@ -2,29 +2,36 @@ const express = require('express');
 const next = require('next');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-// needs full path to index.js because esm module is experimental
+const dotenv = require('dotenv');
 const productsAPI = require('./server/routes/index.js');
 
-const uri = `mongodb+srv://@cluster0-wxyfb.mongodb.net/products?retryWrites=true&w=majority`;
+dotenv.config();
+const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.KEY}@cluster0-wxyfb.mongodb.net/test?retryWrites=true&w=majority`;
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-mongoose.connect(uri, {
+(async () => {
+  try {
+    await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      user: process.env.USER,
-      password: process.env.PASSWORD
     });
+    const db = mongoose.connection;
 
-const db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function() {
+      console.log('good connection');
+      // we're connected!
+    });
+  } catch(e) {
+    console.log('error on connection', e);
+  }
+})();
 
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function() {
-  console.log('good connection');
-  // we're connected!
-});
+
+
 
 
 
