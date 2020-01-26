@@ -44,6 +44,7 @@ const App = (props) => {
           const res = await fetch(`http://localhost:3000/api/products/${product._id}`, { method: 'PATCH'});
           const data = await res.json();
           setProducts(data.map(mapCodesToProducts));
+          setBalance(balance - product.price);
         } catch(e) {
           setError(e.error);
         }
@@ -63,7 +64,7 @@ const App = (props) => {
       <h1>{TEXTS.mainTitle}</h1>
       <div className='products-container'>
         {products.length && products.map(product => (
-          <div key={product.id} className='product'>
+          <div key={product.id} className='card product'>
               <div className='product-title'><b>{product.name}</b></div>
               <div>{TEXTS.quantity}: {product.quantity}</div>
               <div>{TEXTS.price}: {product.price}</div>
@@ -86,6 +87,11 @@ const App = (props) => {
       </div>
 
       <style jsx>{`
+      .card {
+          border-radius: 10px;
+        box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25), -1px -1px 1px 1px rgba(0,0,0,0.22);
+          cursor: pointer;
+        }
       .container {
         display: flex;
         flex-direction: row;
@@ -118,7 +124,7 @@ const App = (props) => {
         align-items: center;
       }
       .product-title {
-        font-size: 16px;
+        font-size: 14px;
         margin-bottom: 4px;
         text-transform: uppercase;
       }

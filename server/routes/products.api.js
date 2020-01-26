@@ -85,7 +85,6 @@ router.delete('/products/:id', async (req, res) => {
 router.patch('/products/:id', async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
-    console.log(product);
     if (product.quantity) {
       product.quantity -=1;
       await product.save();

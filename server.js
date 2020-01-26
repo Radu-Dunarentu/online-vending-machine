@@ -22,8 +22,7 @@ const handle = app.getRequestHandler();
 
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function() {
-      console.log('good connection');
-      // we're connected!
+      // connected!
     });
   } catch(e) {
     console.log('error on connection', e);
