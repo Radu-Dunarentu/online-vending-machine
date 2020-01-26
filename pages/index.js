@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react'
 import fetch from 'isomorphic-unfetch';
-import {TEXTS} from './texts';
+import {TEXTS} from '../components/texts';
+import {SkeletonLine} from '../components/Skeleton';
 
 // TODO: create more components
 const keyPadInputs = ['1','2','3','4','5','6','7','8','9','C','0','B'];
-const productCodes = ['00', '01', '02','03', '04', '05', '06', '07', '08', '09', '10', '11', '12','13', '14', '15','16'];
+const productCodes = ['00', '01', '02','03', '04', '05', '06', '07', '08', '09', '10', '11', '12','13', '14', '15','16', '17', '18', '19'];
 const mapCodesToProducts = (a, index) => ({code: productCodes[index], ...a});
 const coins = [1,3,5,10,20];
-const App = (props) => {
+const App = () => {
 
-  const [products, setProducts] = useState(props.products);
+  const [products, setProducts] = useState([]);
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
   const [info, setInfo] = useState(TEXTS.selectProduct);
   const [balance, setBalance] = useState(0);
-  // used for temp input sum
-  const [sum, setSum] = useState(0);
 
   const handleKeyPad = (keypadInput) => {
     //todo: nice to have a limit
@@ -31,6 +30,14 @@ const App = (props) => {
       setError('')
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch('http://localhost:3000/api/products');
+      const data = await res.json();
+      setProducts(data.map(mapCodesToProducts));
+    })();
+  }, []);
 
   const resetInput = () => {
     setInput('');
@@ -63,14 +70,14 @@ const App = (props) => {
       <div>
       <h1>{TEXTS.mainTitle}</h1>
       <div className='products-container'>
-        {products.length && products.map(product => (
+        {products.length ? products.map(product => (
           <div key={product.id} className='card product'>
               <div className='product-title'><b>{product.name}</b></div>
               <div>{TEXTS.quantity}: {product.quantity}</div>
               <div>{TEXTS.price}: {product.price}</div>
               <div>{TEXTS.code}: <b>{product.code}</b></div>
           </div>
-        ))}
+        )): (productCodes.map(() => <SkeletonLine width={400} height={500}/>))}
       </div>
         </div>
       <div>
@@ -153,13 +160,13 @@ const App = (props) => {
 };
 
 
-App.getInitialProps = async () => {
+/*App.getInitialProps = async () => {
   const res = await fetch('http://localhost:3000/api/products');
   const data = await res.json();
   return {
     products: data.map(mapCodesToProducts)
   }
-};
+};*/
 
 
 export default App;
