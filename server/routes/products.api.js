@@ -65,7 +65,6 @@ router.get('/generate-products', async(req, res) => {
 router.get('/products', async (req, res) => {
   try {
     const products = await Product.find({});
-    console.log(products);
     res.send(products);
   } catch(e) {
     console.log(e);
@@ -76,7 +75,7 @@ router.get('/products', async (req, res) => {
 router.delete('/products/:id', async (req, res) => {
   try {
     const prod = await Product.findByIdAndDelete(req.params.id);
-    if (!prod) res.status(404).send("No item found");
+    if (!prod) res.status(404).send({error: "No item found"});
     res.status(200).send()
   }catch(e) {
     res.status(500).send(e);
@@ -85,9 +84,16 @@ router.delete('/products/:id', async (req, res) => {
 
 router.patch('/products/:id', async (req, res) => {
   try {
-    await Product.findByIdAndUpdate(req.params.id, req.body);
-    const prod = await Product.save();
-    res.send(prod);
+    const product = await Product.findById(req.params.id);
+    console.log(product);
+    if (product.quantity) {
+      product.quantity -=1;
+      await product.save();
+      const products = await Product.find({});
+      res.send(products);
+    } else {
+      res.status(404).send({error: 'quantity not enough'});
+    }
   } catch (err) {
     res.status(500).send(err)
   }

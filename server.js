@@ -3,7 +3,7 @@ const next = require('next');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const productsAPI = require('./server/routes/index.js');
+const productsAPI = require('./server/routes/products.api.js');
 
 dotenv.config();
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.KEY}@cluster0-wxyfb.mongodb.net/test?retryWrites=true&w=majority`;
@@ -29,11 +29,6 @@ const handle = app.getRequestHandler();
     console.log('error on connection', e);
   }
 })();
-
-
-
-
-
 
 app.prepare().then(() => {
   const server = express();
