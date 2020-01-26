@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import fetch from 'isomorphic-unfetch';
 import {TEXTS} from '../components/texts';
 import {SkeletonLine} from '../components/Skeleton';
+import ProductList from "../components/productList";
 
 // TODO: create more components
 const keyPadInputs = ['1','2','3','4','5','6','7','8','9','C','0','B'];
@@ -73,14 +74,8 @@ const App = () => {
       <div>
       <h1>{TEXTS.mainTitle}</h1>
       <div className='products-container'>
-        {products.length ? products.map(product => (
-          <div key={product.id} className='card product'>
-              <div className='product-title'><b>{product.name}</b></div>
-              <div>{TEXTS.quantity}: {product.quantity}</div>
-              <div>{TEXTS.price}: {product.price}</div>
-              <div>{TEXTS.code}: <b>{product.code}</b></div>
-          </div>
-        )): (productCodes.map(() => <SkeletonLine width={400} height={500}/>))}
+        {products.length ? <ProductList products={products} />
+        : (productCodes.map(() => <SkeletonLine width={400} height={500}/>))}
       </div>
         </div>
       <div>
@@ -97,11 +92,7 @@ const App = () => {
       </div>
 
       <style jsx>{`
-      .card {
-          border-radius: 10px;
-        box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25), -1px -1px 1px 1px rgba(0,0,0,0.22);
-          cursor: pointer;
-        }
+      
       .container {
         display: flex;
         flex-direction: row;
@@ -126,18 +117,7 @@ const App = () => {
         grid-column-gap: 10px;
         grid-row-gap: 10px;
       }
-      .product {
-        border: 1px solid lightgrey;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
-      .product-title {
-        font-size: 14px;
-        margin-bottom: 4px;
-        text-transform: uppercase;
-      }
+      
       .keypad-container {
         display: grid;
         grid-template-columns: repeat(3, 25px);

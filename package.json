@@ -4,10 +4,14 @@
   "scripts": {
     "dev": "nodemon server.js",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production node server.js"
+    "export": "next export",
+    "start": "cross-env NODE_ENV=production node server.js",
+    "analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {
+    "@next/bundle-analyzer": "^9.2.1",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "cross-env": "^5.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

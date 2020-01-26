@@ -3,6 +3,7 @@ const next = require('next');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const productsAPI = require('./server/routes/products.api.js');
 
 dotenv.config();
@@ -32,6 +33,7 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
+  server.use(cors());
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
   server.use('/api', productsAPI);
