@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
-// const productsAPI = require('./server/routes/products.api.js');
+const productsAPI = require('./server/routes/products.api.js');
 
 dotenv.config();
 const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.KEY}@cluster0-wxyfb.mongodb.net/test?retryWrites=true&w=majority`;
@@ -36,7 +36,7 @@ app.prepare().then(() => {
   server.use(cors());
   server.use(bodyParser.json());
   server.use(bodyParser.urlencoded({ extended: true }));
-  //server.use('/api', productsAPI);
+  server.use('/api', productsAPI);
   server.all('*', (req, res) => {
     return handle(req, res)
   });

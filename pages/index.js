@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react'
 import * as axios from 'axios';
 import * as xml2js from 'xml2js'
 const parser = new xml2js.Parser();
+const baseUrl = 'http://localhost:3000/api';
 
 const App = () => {
   const [username, setUsername] = useState('');
+  const [collection, setCollection] = useState(null);
   const [error, setError] = useState('');
 
   const getCollection = async () => {
     console.log('get collection for username', username);
+    setCollection(null);
     setError('');
     try {
       const {data} = await axios.get(`https://www.boardgamegeek.com/xmlapi2/collection?username=${username}&excludesubtype=boardgameexpansion&own=1`)
@@ -25,11 +28,25 @@ const App = () => {
           collectionId: e.$.collid
         }
       });
+      setCollection(results);
       console.log('mapped collection is', results);
     } catch(e) {
-      console.warn(`failed to get Collection for username: ${username}, failed with ${e}`);
-      setError(e);
+      console.warn(`failed to get Collection for username: ${username}`, e);
+      setError('failed to get collection, try again', username);
+    }
+  };
+
+  const addCollection = async () => {
+    console.log('add collection for', username);
+    setError('');
+    try {
+      const data = await axios.post(`${baseUrl}/collections/${username}`, {collection});
+      console.log('added Collection ', data);
+    } catch(e) {
+      console.warn('failed to add collection', e);
+      setError('failed to add');
     } finally {
+      setCollection(null);
       setUsername('');
     }
   };
@@ -38,8 +55,9 @@ const App = () => {
     <div>
       <div>hello gamers!</div>
       {error && <div>Error: {error}</div>}
+      {collection && <div>Collection set {collection.length}</div>}
       <input type="text" onChange={e => setUsername(e.target.value)}/>
-      <button onClick={getCollection}>Get</button>
+      <button onClick={getCollection}>Get</button><button onClick={addCollection}>Set</button>
       <style jsx>{`
       `}</style>
     </div>

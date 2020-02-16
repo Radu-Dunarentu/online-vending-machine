@@ -1,8 +1,28 @@
+const express = require('express');
+const router = express.Router();
+const uuidv4 = require('uuid/v4');
+const Collection = require('../models/Collection');
+
+
+router.post('/collections/:username', async(req, res) => {
+  // todo: add err handling in case the username exists
+  try {
+    console.log('')
+    const collection = new Collection({ username: req.params.username, id: uuidv4(), items: req.body.collection});
+    await collection.save();
+    res.send(collection);
+  } catch(e) {
+    console.log(e);
+    res.status(500).send(e);
+  }
+});
+
+module.exports = router;
 /*
 const express = require('express');
 const router = express.Router();
 //const Product = require('../models/Product');
-const uuidv4 = require('uuid/v4');
+
 
 const products = [
   {
