@@ -1,6 +1,7 @@
+/*
 const express = require('express');
 const router = express.Router();
-const Product = require('../models/Product');
+//const Product = require('../models/Product');
 const uuidv4 = require('uuid/v4');
 
 const products = [
@@ -109,3 +110,4 @@ router.post('/products/:id', async(req, res) => {
 });
 
 module.exports = router;
+*/
